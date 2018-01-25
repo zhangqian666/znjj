@@ -5,7 +5,10 @@ import com.zack.znjj.common.restful.Const;
 import com.zack.znjj.common.restful.ResponseCode;
 import com.zack.znjj.common.restful.ServerResponse;
 import com.zack.znjj.model.User;
+import com.zack.znjj.service.IRedisService;
 import com.zack.znjj.service.IUserService;
+import com.zack.znjj.util.JWTUtil;
+import com.zack.znjj.util.JsonUtil;
 import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,6 +28,8 @@ public class UserController {
 
     @Autowired
     private IUserService iUserService;
+    @Autowired
+    private IRedisService iRedisService;
 
 
     /**
@@ -40,6 +45,14 @@ public class UserController {
         ServerResponse<User> response = iUserService.login(username, password);
         if (response.isSuccess()) {
             session.setAttribute(Const.CURRENT_USER, response.getData());
+        }
+        String jwt = null;
+        try {
+            jwt = JWTUtil.createJWT(response.getData().getId(), response.getData().getUsername());
+            iRedisService.setExpire(jwt, JsonUtil.getJsonFromObject(response.getData()), Long.parseLong(60 * 12 * 30 + ""));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ServerResponse.createByErrorMessage("token生成失败");
         }
         return response;
     }

@@ -3,11 +3,8 @@ package com.zack.znjj.common.configuration;
 import com.google.common.collect.Maps;
 import com.zack.znjj.common.restful.ResponseCode;
 import com.zack.znjj.mapper.UserMapper;
-import com.zack.znjj.model.User;
-import com.zack.znjj.service.IUserService;
 import com.zack.znjj.util.JWTUtil;
 import com.zack.znjj.util.JsonUtil;
-import com.zack.znjj.util.RedisPoolUtil;
 import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -46,20 +43,21 @@ public class JWTTokenInterceptor implements HandlerInterceptor {
         }
 
         Claims token = null;
+        String jwtToken = null;
         try {
-            token = JWTUtil.parseJWT(request.getHeader("token"));
+            jwtToken = request.getHeader("token");
+            token = JWTUtil.parseJWT(jwtToken);
             log.error("token --> " + token);
         } catch (Exception e) {
             e.printStackTrace();
-            resultCodeMsg(response, ResponseCode.ERROR.getCode(), "请输入正确的token值");
+            resultCodeMsg(response, ResponseCode.ERROR.getCode(), "token错误");
             return false;
         }
-        RedisPoolUtil.expire(token.get("uid").toString(), 4000);
-        User user = userMapper.selectByPrimaryKey(((Integer) token.get("uid")));
-        if (user != null) {
-            request.setAttribute("user", user);
-        }
-        return true;
+//        if (token.get("uid").equals(RedisUtil.getInstance().getUserByKey(jwtToken))) {
+//            return true;
+//        }
+        resultCodeMsg(response, ResponseCode.ERROR.getCode(), "token错误");
+        return false;
     }
 
     /**
