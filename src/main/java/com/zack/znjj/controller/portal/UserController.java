@@ -52,7 +52,7 @@ public class UserController {
                 response.getData().setToken(jwt);
             } catch (Exception e) {
                 e.printStackTrace();
-                return ServerResponse.createByErrorMessage("token生成失败，检查redis服务器");
+                return ServerResponse.createByErrorMessage("token生成失败，检查redis服务器" + e.getMessage());
             }
         }
         return response;
