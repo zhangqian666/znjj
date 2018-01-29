@@ -4,6 +4,8 @@ package com.zack.znjj.service;
 import com.zack.znjj.common.restful.ServerResponse;
 import com.zack.znjj.model.User;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * Created by geely
  */
@@ -28,4 +30,6 @@ public interface IUserService {
     ServerResponse<User> getInformation(Integer userId);
 
     ServerResponse checkAdminRole(User user);
+
+    ServerResponse<User> parseRequest(HttpServletRequest request);
 }

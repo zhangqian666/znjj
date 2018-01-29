@@ -7,10 +7,12 @@ import com.zack.znjj.common.TokenCache;
 import com.zack.znjj.mapper.UserMapper;
 import com.zack.znjj.model.User;
 import com.zack.znjj.service.IUserService;
+import com.zack.znjj.util.JWTUtil;
 import com.zack.znjj.util.MD5Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.UUID;
 
 /**
@@ -196,6 +198,25 @@ public class UserServiceImpl implements IUserService {
             return ServerResponse.createBySuccess();
         }
         return ServerResponse.createByError();
+    }
+
+    @Override
+    public ServerResponse<User> parseRequest(HttpServletRequest request) {
+        String token = request.getHeader("token");
+        Integer uid;
+        try {
+            uid = ((Integer) JWTUtil.parseJWT(token).get("uid"));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ServerResponse.createByErrorMessage("解析失败");
+        }
+        User user = userMapper.selectByPrimaryKey(uid);
+        if (user != null) {
+            return ServerResponse.createBySuccess(user);
+        } else {
+            return ServerResponse.createByErrorMessage("找不到用户");
+        }
+
     }
 
 

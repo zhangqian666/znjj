@@ -8,13 +8,13 @@ import com.zack.znjj.model.User;
 import com.zack.znjj.service.IRedisService;
 import com.zack.znjj.service.IUserService;
 import com.zack.znjj.util.JWTUtil;
-import com.zack.znjj.util.JsonUtil;
 import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 /**
@@ -40,47 +40,46 @@ public class UserController {
      * @param session
      * @return
      */
-    @RequestMapping(value = "login.do", method = RequestMethod.POST)
+    @RequestMapping(value = "login", method = RequestMethod.POST)
     public ServerResponse<User> login(String username, String password, HttpSession session) {
         log.info("login");
         ServerResponse<User> response = iUserService.login(username, password);
         if (response.isSuccess()) {
-            session.setAttribute(Const.CURRENT_USER, response.getData());
-        }
-        String jwt = null;
-        try {
-            jwt = JWTUtil.createJWT(response.getData().getId(), response.getData().getUsername());
-            iRedisService.setExpire(jwt, JsonUtil.getJsonFromObject(response.getData()), Long.parseLong(60 * 12 * 30 + ""));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ServerResponse.createByErrorMessage("token生成失败");
+            String jwt = null;
+            try {
+                jwt = JWTUtil.createJWT(response.getData().getId(), response.getData().getUsername());
+                iRedisService.setExpire(response.getData().getId().toString(), jwt, Long.parseLong(60 * 12 * 30 + ""));
+            } catch (Exception e) {
+                e.printStackTrace();
+                return ServerResponse.createByErrorMessage("token生成失败，检查redis服务器");
+            }
         }
         return response;
     }
 
-    @RequestMapping(value = "logout.do", method = RequestMethod.POST)
+    @RequestMapping(value = "logout", method = RequestMethod.POST)
     public ServerResponse<String> logout(HttpSession session) {
         session.removeAttribute(Const.CURRENT_USER);
         return ServerResponse.createBySuccess();
     }
 
-    @RequestMapping(value = "register.do", method = RequestMethod.POST)
+    @RequestMapping(value = "register", method = RequestMethod.POST)
     public ServerResponse<String> register(User user) {
         return iUserService.register(user);
     }
 
 
-    @RequestMapping(value = "check_valid.do", method = RequestMethod.POST)
+    @RequestMapping(value = "available", method = RequestMethod.POST)
     public ServerResponse<String> checkValid(String str, String type) {
         return iUserService.checkValid(str, type);
     }
 
 
-    @RequestMapping(value = "get_user_info.do", method = RequestMethod.POST)
-    public ServerResponse<User> getUserInfo(HttpSession session) {
-        User user = (User) session.getAttribute(Const.CURRENT_USER);
-        if (user != null) {
-            return ServerResponse.createBySuccess(user);
+    @RequestMapping(value = "self/info", method = RequestMethod.POST)
+    public ServerResponse<User> getUserInfo(HttpServletRequest request) {
+        ServerResponse<User> userServerResponse = iUserService.parseRequest(request);
+        if (userServerResponse.isSuccess()) {
+            return userServerResponse;
         }
         return ServerResponse.createByErrorMessage("用户未登录,无法获取当前用户的信息");
     }

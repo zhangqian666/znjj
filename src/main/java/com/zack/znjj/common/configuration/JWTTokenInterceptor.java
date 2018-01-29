@@ -3,6 +3,7 @@ package com.zack.znjj.common.configuration;
 import com.google.common.collect.Maps;
 import com.zack.znjj.common.restful.ResponseCode;
 import com.zack.znjj.mapper.UserMapper;
+import com.zack.znjj.service.IRedisService;
 import com.zack.znjj.util.JWTUtil;
 import com.zack.znjj.util.JsonUtil;
 import io.jsonwebtoken.Claims;
@@ -26,6 +27,9 @@ public class JWTTokenInterceptor implements HandlerInterceptor {
     @Autowired
     UserMapper userMapper;
 
+    @Autowired
+    IRedisService iRedisService;
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         log.info("preHandle");
@@ -41,22 +45,13 @@ public class JWTTokenInterceptor implements HandlerInterceptor {
             //如果是拦截到登录请求，不打印参数，因为参数里面有密码，全部会打印到日志中，防止日志泄露
             return true;
         }
-
-        Claims token = null;
-        String jwtToken = null;
-        try {
-            jwtToken = request.getHeader("token");
-            token = JWTUtil.parseJWT(jwtToken);
-            log.error("token --> " + token);
-        } catch (Exception e) {
-            e.printStackTrace();
-            resultCodeMsg(response, ResponseCode.ERROR.getCode(), "token错误");
-            return false;
+        String jwtToken = request.getHeader("token");
+        String uid = ((String) JWTUtil.parseJWT(jwtToken).get("uid"));
+        String redisToken = (String) iRedisService.get(uid);
+        if (StringUtils.equals(redisToken, jwtToken)) {
+            return true;
         }
-//        if (token.get("uid").equals(RedisUtil.getInstance().getUserByKey(jwtToken))) {
-//            return true;
-//        }
-        resultCodeMsg(response, ResponseCode.ERROR.getCode(), "token错误");
+        resultCodeMsg(response, ResponseCode.ERROR.getCode(), "未登录");
         return false;
     }
 
