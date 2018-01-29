@@ -49,6 +49,7 @@ public class UserController {
             try {
                 jwt = JWTUtil.createJWT(response.getData().getId(), response.getData().getUsername());
                 iRedisService.setExpire(response.getData().getId().toString(), jwt, Long.parseLong(60 * 12 * 30 + ""));
+                response.getData().setToken(jwt);
             } catch (Exception e) {
                 e.printStackTrace();
                 return ServerResponse.createByErrorMessage("token生成失败，检查redis服务器");
