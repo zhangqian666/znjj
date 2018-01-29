@@ -16,7 +16,7 @@ spring:
       max-request-size: 1024Mb
       max-file-size: 2048Mb
   datasource:
-    url: jdbc:mysql://127.0.0.1:3306/znjj?characterEncoding=utf-8
+    url: jdbc:mysql://39.106.46.79:3306/znjj?characterEncoding=utf-8
     username: root
     password: 123456_aA
     driver-class-name: com.mysql.jdbc.Driver
@@ -42,7 +42,7 @@ spring:
     filters: stat, wall, log4j
   redis:
     database: 0
-    host: 127.0.0.1
+    host: 39.106.46.79
     port: 6379
     timeout: 0
     pool:
@@ -50,7 +50,7 @@ spring:
       max-idle: 10
       min-idle: 2
       max-wait: -1
-    password:
+    password: 123456_aA
   application:
     name: spring-boot-config
 mybatis:
