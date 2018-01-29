@@ -45,9 +45,17 @@ public class JWTTokenInterceptor implements HandlerInterceptor {
             //如果是拦截到登录请求，不打印参数，因为参数里面有密码，全部会打印到日志中，防止日志泄露
             return true;
         }
-        String jwtToken = request.getHeader("token");
-        String uid = ((String) JWTUtil.parseJWT(jwtToken).get("uid"));
-        String redisToken = (String) iRedisService.get(uid);
+        String jwtToken = null;
+        String redisToken = null;
+        try {
+            jwtToken = request.getHeader("token");
+            Integer uid = ((Integer) JWTUtil.parseJWT(jwtToken).get("uid"));
+            redisToken = (String) iRedisService.get(uid + "");
+        } catch (Exception e) {
+            e.printStackTrace();
+            resultCodeMsg(response, ResponseCode.ERROR.getCode(), "token错误");
+            return false;
+        }
         if (StringUtils.equals(redisToken, jwtToken)) {
             return true;
         }
