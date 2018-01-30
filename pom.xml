@@ -6,7 +6,7 @@
     <groupId>com.zack</groupId>
     <artifactId>znjj</artifactId>
     <version>1.0.0</version>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
 
     <name>znjj</name>
     <description>Demo project for Spring Boot</description>
@@ -47,11 +47,11 @@
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-tomcat</artifactId>
-            <scope>provided</scope>
-        </dependency>
+        <!--<dependency>-->
+        <!--<groupId>org.springframework.boot</groupId>-->
+        <!--<artifactId>spring-boot-starter-tomcat</artifactId>-->
+        <!--<scope>provided</scope>-->
+        <!--</dependency>-->
 
         <!-- spring boot tomcat jsp 支持开启 -->
         <!--<dependency>-->
