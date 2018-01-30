@@ -10,18 +10,19 @@ import org.springframework.context.annotation.Bean;
 
 import java.util.Properties;
 
+//extends SpringBootServletInitializer
 @SpringBootApplication
 @MapperScan("com.zack.znjj.mapper")
-public class MainApplication  extends SpringBootServletInitializer {
+public class MainApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(MainApplication.class, args);
     }
 
-    @Override
-    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-        return application.sources(MainApplication.class);
-    }
+//    @Override
+//    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+//        return application.sources(MainApplication.class);
+//    }
 
 
     //配置mybatis的分页插件pageHelper
