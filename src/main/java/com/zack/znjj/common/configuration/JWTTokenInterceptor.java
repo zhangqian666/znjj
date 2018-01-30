@@ -47,7 +47,7 @@ public class JWTTokenInterceptor implements HandlerInterceptor {
         String redisToken = null;
         try {
             jwtToken = request.getHeader("token");
-            Integer uid = ((Integer) JWTUtil.parseJWT(jwtToken).get("uid"));
+            Integer uid = (Integer) JWTUtil.parseJWT(jwtToken).get("uid");
             redisToken = (String) iRedisService.get(uid + "");
         } catch (Exception e) {
             e.printStackTrace();

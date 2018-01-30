@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.UUID;
 
 /**
  * Created by geely
@@ -44,21 +45,18 @@ public class UserController {
     @RequestMapping(value = "login", method = RequestMethod.POST)
     public ServerResponse<User> login(String username, String password, HttpSession session) {
         log.info("login");
-        ServerResponse<User> response = iUserService.login(username, password);
-        if (response.isSuccess()) {
-            String jwt = null;
+        ServerResponse<User> userServerResponse = iUserService.login(username, password);
+        if (userServerResponse.isSuccess()) {
             try {
-                jwt = JWTUtil.createJWT(response.getData().getId(), response.getData().getUsername());
-                if (!iRedisService.set(response.getData().getId().toString(), jwt, Long.parseLong(60 * 12 * 30 + ""))) {
-                    return ServerResponse.createByErrorMessage("token生成失败，检查redis服务器");
-                }
-                response.getData().setToken(jwt);
+                String jwtToken = JWTUtil.createJWT(userServerResponse.getData().getId(), userServerResponse.getData().getUsername());
+                iRedisService.hmSet("user", userServerResponse.getData().getId().toString(), jwtToken);
+                userServerResponse.getData().setToken(jwtToken);
             } catch (Exception e) {
                 e.printStackTrace();
                 return ServerResponse.createByErrorMessage("token生成失败，检查redis服务器" + e.getMessage());
             }
         }
-        return response;
+        return userServerResponse;
     }
 
     @RequestMapping(value = "logout", method = RequestMethod.POST)

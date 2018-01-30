@@ -1,7 +1,6 @@
 package com.zack.znjj.util;
 
 
-
 import com.zack.znjj.common.restful.Const;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -12,6 +11,7 @@ import org.apache.commons.net.util.Base64;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.Key;
+import java.util.Date;
 
 @Slf4j
 public class JWTUtil {
@@ -38,10 +38,13 @@ public class JWTUtil {
      * @throws Exception
      */
     public static String createJWT(Integer uid, String subject) throws Exception {
-        Key key = generalKey() ;//这里是加密解密的key。
+        Key key = generalKey();//这里是加密解密的key。
+        long nowMillis = System.currentTimeMillis();
+        Date now = new Date(nowMillis);
         String compactJws = Jwts.builder()//返回的字符串便是我们的jwt串了
-                .setSubject(subject)//设置主题
                 .claim("uid", uid)
+                .setSubject(subject)//设置主题
+                .setIssuedAt(now)
                 .signWith(SignatureAlgorithm.HS512, key)//设置算法（必须）
                 .compact();//这个是全部设置完成后拼成jwt串的方法
         return compactJws;
