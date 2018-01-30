@@ -8,7 +8,6 @@ import com.zack.znjj.model.User;
 import com.zack.znjj.service.IRedisService;
 import com.zack.znjj.service.IUserService;
 import com.zack.znjj.util.JWTUtil;
-import com.zack.znjj.util.RedisUtil;
 import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;

@@ -2,16 +2,12 @@ package com.zack.znjj.common.configuration;
 
 import com.google.common.collect.Maps;
 import com.zack.znjj.common.restful.ResponseCode;
-import com.zack.znjj.mapper.UserMapper;
 import com.zack.znjj.service.IRedisService;
 import com.zack.znjj.util.JWTUtil;
 import com.zack.znjj.util.JsonUtil;
-import com.zack.znjj.util.RedisUtil;
-import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -25,10 +21,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 @Slf4j
-@Component
 public class JWTTokenInterceptor implements HandlerInterceptor {
-    @Autowired
-    UserMapper userMapper;
 
     @Autowired
     IRedisService iRedisService;
