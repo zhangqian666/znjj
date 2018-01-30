@@ -6,6 +6,7 @@ import com.zack.znjj.mapper.UserMapper;
 import com.zack.znjj.service.IRedisService;
 import com.zack.znjj.util.JWTUtil;
 import com.zack.znjj.util.JsonUtil;
+import com.zack.znjj.util.RedisUtil;
 import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -26,9 +27,8 @@ import java.util.Map;
 public class JWTTokenInterceptor implements HandlerInterceptor {
     @Autowired
     UserMapper userMapper;
-
     @Autowired
-    IRedisService iRedisService;
+    RedisUtil redisUtil;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -50,7 +50,8 @@ public class JWTTokenInterceptor implements HandlerInterceptor {
         try {
             jwtToken = request.getHeader("token");
             Integer uid = ((Integer) JWTUtil.parseJWT(jwtToken).get("uid"));
-            redisToken = (String) iRedisService.get(uid + "");
+//            redisToken = (String) iRedisService.get(uid + "");
+            redisToken = ((String) redisUtil.getValue(uid + ""));
         } catch (Exception e) {
             e.printStackTrace();
             resultCodeMsg(response, ResponseCode.ERROR.getCode(), "token错误");

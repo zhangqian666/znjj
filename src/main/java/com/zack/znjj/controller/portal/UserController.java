@@ -8,6 +8,7 @@ import com.zack.znjj.model.User;
 import com.zack.znjj.service.IRedisService;
 import com.zack.znjj.service.IUserService;
 import com.zack.znjj.util.JWTUtil;
+import com.zack.znjj.util.RedisUtil;
 import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,9 +29,10 @@ public class UserController {
 
     @Autowired
     private IUserService iUserService;
-    @Autowired
-    private IRedisService iRedisService;
 
+
+    @Autowired
+    private RedisUtil redisUtil;
 
     /**
      * 用户登录
@@ -48,7 +50,9 @@ public class UserController {
             String jwt = null;
             try {
                 jwt = JWTUtil.createJWT(response.getData().getId(), response.getData().getUsername());
-                iRedisService.setExpire(response.getData().getId().toString(), jwt, Long.parseLong(60 * 12 * 30 + ""));
+//                iRedisService.setExpire(response.getData().getId().toString(), jwt, Long.parseLong(60 * 12 * 30 + ""));
+
+                redisUtil.setZSet(response.getData().getId().toString(), jwt, Long.parseLong(60 * 12 * 30 + ""));
                 response.getData().setToken(jwt);
             } catch (Exception e) {
                 e.printStackTrace();

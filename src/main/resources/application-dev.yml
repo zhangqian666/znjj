@@ -44,7 +44,7 @@
       database: 0
       host: 39.106.46.79
       port: 6379
-      timeout: 0
+      timeout: 6000
       pool:
         max-active: 8
         max-idle: 10
