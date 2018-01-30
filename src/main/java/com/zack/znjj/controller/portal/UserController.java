@@ -48,9 +48,9 @@ public class UserController {
         ServerResponse<User> userServerResponse = iUserService.login(username, password);
         if (userServerResponse.isSuccess()) {
             try {
-                String jwtToken = JWTUtil.createJWT(userServerResponse.getData().getId(), userServerResponse.getData().getUsername());
-                iRedisService.hmSet("user", userServerResponse.getData().getId().toString(), jwtToken);
-                userServerResponse.getData().setToken(jwtToken);
+//                String jwtToken = JWTUtil.createJWT(userServerResponse.getData().getId(), userServerResponse.getData().getUsername());
+//                iRedisService.hmSet("user", userServerResponse.getData().getId().toString(), jwtToken);
+//                userServerResponse.getData().setToken(jwtToken);
             } catch (Exception e) {
                 e.printStackTrace();
                 return ServerResponse.createByErrorMessage("token生成失败，检查redis服务器" + e.getMessage());
