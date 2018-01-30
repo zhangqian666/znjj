@@ -42,7 +42,7 @@ public class UserController {
      * @param session
      * @return
      */
-    @RequestMapping(value = "login", method = RequestMethod.POST)
+    @RequestMapping(value = "login/", method = RequestMethod.POST)
     public ServerResponse<User> login(String username, String password, HttpSession session) {
         log.info("login");
         ServerResponse<User> userServerResponse = iUserService.login(username, password);
