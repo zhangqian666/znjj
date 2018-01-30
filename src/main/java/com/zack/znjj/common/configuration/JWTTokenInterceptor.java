@@ -11,6 +11,7 @@ import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -24,11 +25,13 @@ import java.util.Iterator;
 import java.util.Map;
 
 @Slf4j
+@Component
 public class JWTTokenInterceptor implements HandlerInterceptor {
     @Autowired
     UserMapper userMapper;
+
     @Autowired
-    RedisUtil redisUtil;
+    IRedisService iRedisService;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -50,8 +53,7 @@ public class JWTTokenInterceptor implements HandlerInterceptor {
         try {
             jwtToken = request.getHeader("token");
             Integer uid = ((Integer) JWTUtil.parseJWT(jwtToken).get("uid"));
-//            redisToken = (String) iRedisService.get(uid + "");
-            redisToken = ((String) redisUtil.getValue(uid + ""));
+            redisToken = (String) iRedisService.get(uid + "");
         } catch (Exception e) {
             e.printStackTrace();
             resultCodeMsg(response, ResponseCode.ERROR.getCode(), "token错误");

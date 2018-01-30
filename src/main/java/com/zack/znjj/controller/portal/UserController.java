@@ -32,7 +32,7 @@ public class UserController {
 
 
     @Autowired
-    private RedisUtil redisUtil;
+    private IRedisService iRedisService;
 
     /**
      * 用户登录
@@ -50,9 +50,7 @@ public class UserController {
             String jwt = null;
             try {
                 jwt = JWTUtil.createJWT(response.getData().getId(), response.getData().getUsername());
-//                iRedisService.setExpire(response.getData().getId().toString(), jwt, Long.parseLong(60 * 12 * 30 + ""));
-
-                redisUtil.setZSet(response.getData().getId().toString(), jwt, Long.parseLong(60 * 12 * 30 + ""));
+                iRedisService.set(response.getData().getId().toString(), jwt, Long.parseLong(60 * 12 * 30 + ""));
                 response.getData().setToken(jwt);
             } catch (Exception e) {
                 e.printStackTrace();
