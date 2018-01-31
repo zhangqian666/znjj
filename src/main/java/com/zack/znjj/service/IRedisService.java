@@ -23,6 +23,8 @@ public interface IRedisService {
 
     Object hmGet(String key, Object hashKey);
 
+    boolean hmDel(String key, Object hashKey);
+
     void lPush(String k, Object v);
 
     List<Object> lRange(String k, long l, long l1);

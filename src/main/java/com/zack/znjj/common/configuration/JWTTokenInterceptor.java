@@ -36,7 +36,9 @@ public class JWTTokenInterceptor implements HandlerInterceptor {
         String className = handlerMethod.getBean().getClass().getSimpleName();
 
         if (StringUtils.equals(methodName, "login") ||
-                StringUtils.equals(methodName, "register")) {
+                StringUtils.equals(methodName, "register") ||
+                StringUtils.equals(methodName, "available")
+                ) {
             log.error("未拦截http请求：" + className + ":" + methodName);
             return true;
         }
@@ -45,10 +47,10 @@ public class JWTTokenInterceptor implements HandlerInterceptor {
         try {
             jwtToken = request.getHeader("token");
             Integer uid = (Integer) JWTUtil.parseJWT(jwtToken).get("uid");
-            redisToken = (String) iRedisService.hmGet("user", "" + uid);
+            redisToken = iRedisService.hmGet("user", "" + uid) + "";
         } catch (Exception e) {
             e.printStackTrace();
-            resultCodeMsg(response, ResponseCode.ERROR.getCode(), "token错误");
+            resultCodeMsg(response, ResponseCode.ERROR.getCode(), "未登录");
             return false;
         }
         if (StringUtils.equals(redisToken, jwtToken)) {

@@ -22,23 +22,19 @@ public class ProductController {
     private IProductService iProductService;
 
 
-
-    @RequestMapping("detail.do")
-    public ServerResponse<ProductDetailVo> detail(Integer productId){
+    @RequestMapping("detail/")
+    public ServerResponse<ProductDetailVo> detail(Integer productId) {
         return iProductService.getProductDetail(productId);
     }
 
-    @RequestMapping("list.do")
-    public ServerResponse<PageInfo> list(@RequestParam(value = "keyword",required = false)String keyword,
-                                         @RequestParam(value = "categoryId",required = false)Integer categoryId,
-                                         @RequestParam(value = "pageNum",defaultValue = "1") int pageNum,
-                                         @RequestParam(value = "pageSize",defaultValue = "10") int pageSize,
-                                         @RequestParam(value = "orderBy",defaultValue = "") String orderBy){
-        return iProductService.getProductByKeywordCategory(keyword,categoryId,pageNum,pageSize,orderBy);
+    @RequestMapping("list/")
+    public ServerResponse<PageInfo> list(@RequestParam(value = "keyword", required = false) String keyword,
+                                         @RequestParam(value = "categoryId", required = false) Integer categoryId,
+                                         @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
+                                         @RequestParam(value = "pageSize", defaultValue = "10") int pageSize,
+                                         @RequestParam(value = "orderBy", defaultValue = "") String orderBy) {
+        return iProductService.getProductByKeywordCategory(keyword, categoryId, pageNum, pageSize, orderBy);
     }
-
-
-
 
 
 }

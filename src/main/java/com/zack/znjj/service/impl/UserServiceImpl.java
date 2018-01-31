@@ -6,6 +6,7 @@ import com.zack.znjj.common.restful.ServerResponse;
 import com.zack.znjj.common.TokenCache;
 import com.zack.znjj.mapper.UserMapper;
 import com.zack.znjj.model.User;
+import com.zack.znjj.service.IRedisService;
 import com.zack.znjj.service.IUserService;
 import com.zack.znjj.util.JWTUtil;
 import com.zack.znjj.util.MD5Util;
@@ -23,6 +24,8 @@ public class UserServiceImpl implements IUserService {
 
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private IRedisService iRedisService;
 
     @Override
     public ServerResponse<User> login(String username, String password) {
@@ -36,16 +39,27 @@ public class UserServiceImpl implements IUserService {
             return ServerResponse.createByErrorMessage("密码错误");
         }
         user.setPassword(org.apache.commons.lang3.StringUtils.EMPTY);
+
+        //生成 jwt 并且存储在redis服务器中
+        try {
+            String jwtToken = JWTUtil.createJWT(user.getId(), user.getUsername());
+            iRedisService.hmSet("user", user.getId().toString(), jwtToken);
+            user.setToken(jwtToken);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ServerResponse.createByErrorMessage("token生成失败，检查redis服务器" + e.getMessage());
+        }
+
         return ServerResponse.createBySuccess("登录成功", user);
     }
 
 
     public ServerResponse<String> register(User user) {
-        ServerResponse validResponse = this.checkValid(user.getUsername(), Const.USERNAME);
+        ServerResponse validResponse = this.available(user.getUsername(), Const.USERNAME);
         if (!validResponse.isSuccess()) {
             return validResponse;
         }
-        validResponse = this.checkValid(user.getEmail(), Const.EMAIL);
+        validResponse = this.available(user.getEmail(), Const.EMAIL);
         if (!validResponse.isSuccess()) {
             return validResponse;
         }
@@ -59,7 +73,7 @@ public class UserServiceImpl implements IUserService {
         return ServerResponse.createBySuccessMessage("注册成功");
     }
 
-    public ServerResponse<String> checkValid(String str, String type) {
+    public ServerResponse<String> available(String str, String type) {
         if (org.apache.commons.lang3.StringUtils.isNotBlank(type)) {
             //开始校验
             if (Const.USERNAME.equals(type)) {
@@ -82,7 +96,7 @@ public class UserServiceImpl implements IUserService {
 
     public ServerResponse selectQuestion(String username) {
 
-        ServerResponse validResponse = this.checkValid(username, Const.USERNAME);
+        ServerResponse validResponse = this.available(username, Const.USERNAME);
         if (validResponse.isSuccess()) {
             //用户不存在
             return ServerResponse.createByErrorMessage("用户不存在");
@@ -110,7 +124,7 @@ public class UserServiceImpl implements IUserService {
         if (org.apache.commons.lang3.StringUtils.isBlank(forgetToken)) {
             return ServerResponse.createByErrorMessage("参数错误,token需要传递");
         }
-        ServerResponse validResponse = this.checkValid(username, Const.USERNAME);
+        ServerResponse validResponse = this.available(username, Const.USERNAME);
         if (validResponse.isSuccess()) {
             //用户不存在
             return ServerResponse.createByErrorMessage("用户不存在");

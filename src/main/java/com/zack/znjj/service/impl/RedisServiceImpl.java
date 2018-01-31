@@ -137,6 +137,23 @@ public class RedisServiceImpl implements IRedisService {
     }
 
     /**
+     * 哈希获取数据
+     *
+     * @param key
+     * @param hashKey
+     * @return
+     */
+    public boolean hmDel(String key, Object hashKey) {
+        HashOperations<String, Object, Object> hash = redisTemplate.opsForHash();
+        Long delete = hash.delete(key, hashKey);
+        if (delete > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * 列表添加
      *
      * @param k
