@@ -50,7 +50,7 @@
         max-idle: 10
         min-idle: 2
         max-wait: -1
-      password:
+     password: 123456_aA
     application:
       name: spring-boot-config
   mybatis:
