@@ -1,3 +1,5 @@
+
+
   server:
     port: 8080
     session:
@@ -56,5 +58,9 @@
   mybatis:
     mapper-locations: classpath*:mappers/**/*.xml
     type-aliases-package: com.zack.znjj
+  endpoints:
+    shutdown:
+      enabled: true
+      sensitive: false
 
 
