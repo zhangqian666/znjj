@@ -11,6 +11,7 @@ import com.zack.znjj.service.IFileService;
 import com.zack.znjj.service.IProductService;
 import com.zack.znjj.service.IUserService;
 import com.zack.znjj.util.PropertiesUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,7 +27,7 @@ import java.util.Map;
 /**
  * Created by geely
  */
-
+@Slf4j
 @RestController
 @RequestMapping("/manage/product/")
 public class ProductManageController {
@@ -115,7 +116,6 @@ public class ProductManageController {
                 String path = httpServletRequest.getSession().getServletContext().getRealPath("upload");
                 String targetFileName = iFileService.upload(file, path);
                 String url = PropertiesUtil.getProperty("ftp.server.http.prefix") + targetFileName;
-
                 Map fileMap = Maps.newHashMap();
                 fileMap.put("uri", targetFileName);
                 fileMap.put("url", url);
@@ -136,6 +136,7 @@ public class ProductManageController {
         ServerResponse<User> userServerResponse = iUserService.parseRequest(httpServletRequest);
         if (userServerResponse.isSuccess()) {
             if (iUserService.checkAdminRole(userServerResponse.getData()).isSuccess()) {
+                log.error("开始上传");
                 String path = request.getSession().getServletContext().getRealPath("upload");
                 String targetFileName = iFileService.upload(file, path);
                 if (StringUtils.isBlank(targetFileName)) {
