@@ -115,6 +115,7 @@ public class ProductManageController {
             if (iUserService.checkAdminRole(userServerResponse.getData()).isSuccess()) {
                 String path = httpServletRequest.getSession().getServletContext().getRealPath("upload");
                 String targetFileName = iFileService.upload(file, path);
+                log.error(targetFileName);
                 String url = PropertiesUtil.getProperty("ftp.server.http.prefix") + targetFileName;
                 Map fileMap = Maps.newHashMap();
                 fileMap.put("uri", targetFileName);
