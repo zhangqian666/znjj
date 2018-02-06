@@ -96,7 +96,7 @@ public class JWTTokenInterceptor implements HandlerInterceptor {
      */
     private void resultCodeMsg(HttpServletResponse response, Integer code, String msg) throws IOException {
         Map resultMap = Maps.newHashMap();
-        resultMap.put("code", code);
+        resultMap.put("status", code);
         resultMap.put("msg", msg);
 
         //返回false.即不会调用controller里的方法
