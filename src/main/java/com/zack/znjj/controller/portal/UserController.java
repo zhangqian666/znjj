@@ -95,7 +95,10 @@ public class UserController {
             data.setHeaderImage(url);
             ServerResponse updateDate = iUserService.updateUserInfo(data);
             if (updateDate.isSuccess()) {
-                return ServerResponse.createBySuccess(url);
+                Map fileMap = Maps.newHashMap();
+                fileMap.put("uri", targetFileName);
+                fileMap.put("url", url);
+                return ServerResponse.createBySuccess(fileMap);
             } else {
                 return updateDate;
             }
