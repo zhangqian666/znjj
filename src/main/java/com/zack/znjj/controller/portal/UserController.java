@@ -84,11 +84,12 @@ public class UserController {
         return userServerResponse;
     }
 
-    @RequestMapping("update/headerImage")
+    @RequestMapping("update/headerImage/")
     public ServerResponse upload(@RequestParam(value = "upload_file", required = false) MultipartFile file, HttpServletRequest httpServletRequest) {
         ServerResponse<User> userServerResponse = iUserService.parseRequest(httpServletRequest);
         if (iUserService.checkAdminRole(userServerResponse.getData()).isSuccess()) {
             String path = httpServletRequest.getSession().getServletContext().getRealPath("upload");
+            log.error(file == null ? "file == null" : file.getSize() + path);
             String targetFileName = iFileService.upload(file, path);
             String url = PropertiesUtil.getProperty("ftp.server.http.prefix") + targetFileName;
             User data = userServerResponse.getData();
