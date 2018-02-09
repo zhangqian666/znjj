@@ -7,6 +7,7 @@
         <result column="password" property="password" jdbcType="VARCHAR"/>
         <result column="email" property="email" jdbcType="VARCHAR"/>
         <result column="phone" property="phone" jdbcType="VARCHAR"/>
+        <result column="image" property="headerImage" jdbcType="VARCHAR"/>
         <result column="question" property="question" jdbcType="VARCHAR"/>
         <result column="answer" property="answer" jdbcType="VARCHAR"/>
         <result column="role" property="role" jdbcType="INTEGER"/>
@@ -14,7 +15,7 @@
         <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
     </resultMap>
     <sql id="Base_Column_List">
-    id, username, password, email, phone, question, answer, role, create_time, update_time
+    id, username, password, email,image, phone, question, answer, role, create_time, update_time
   </sql>
     <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
         select
@@ -28,11 +29,11 @@
   </delete>
     <insert id="insert" parameterType="com.zack.znjj.model.User">
     insert into zack_user (id, username, password, 
-      email, phone, question, 
+      email,image, phone, question,
       answer, role, create_time,
       update_time)
     values (#{id,jdbcType=INTEGER}, #{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
-      #{email,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{question,jdbcType=VARCHAR}, 
+      #{email,jdbcType=VARCHAR},#{headerImage,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{question,jdbcType=VARCHAR},
       #{answer,jdbcType=VARCHAR}, #{role,jdbcType=INTEGER}, now(),
      now())
   </insert>
@@ -50,6 +51,9 @@
             </if>
             <if test="email != null">
                 email,
+            </if>
+            <if test="image != null">
+                image,
             </if>
             <if test="phone != null">
                 phone,
@@ -83,6 +87,9 @@
             <if test="email != null">
                 #{email,jdbcType=VARCHAR},
             </if>
+            <if test="image != null">
+                #{headerImage,jdbcType=VARCHAR},
+            </if>
             <if test="phone != null">
                 #{phone,jdbcType=VARCHAR},
             </if>
@@ -115,6 +122,9 @@
             <if test="email != null">
                 email = #{email,jdbcType=VARCHAR},
             </if>
+            <if test="image != null">
+                image = #{headerImage,jdbcType=VARCHAR},
+            </if>
             <if test="phone != null">
                 phone = #{phone,jdbcType=VARCHAR},
             </if>
@@ -141,6 +151,7 @@
     set username = #{username,jdbcType=VARCHAR},
       password = #{password,jdbcType=VARCHAR},
       email = #{email,jdbcType=VARCHAR},
+      image = #{headerImage,jdbcType=VARCHAR},
       phone = #{phone,jdbcType=VARCHAR},
       question = #{question,jdbcType=VARCHAR},
       answer = #{answer,jdbcType=VARCHAR},

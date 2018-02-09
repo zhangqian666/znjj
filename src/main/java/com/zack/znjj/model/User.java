@@ -26,6 +26,8 @@ public class User implements Serializable {
 
     private String answer;
 
+    private String headerImage;
+
     private Integer role;
 
     private Date createTime;
