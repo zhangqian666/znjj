@@ -1,20 +1,26 @@
 package com.zack.znjj.controller.portal;
 
 
+import com.google.common.collect.Maps;
 import com.zack.znjj.common.restful.Const;
 import com.zack.znjj.common.restful.ResponseCode;
 import com.zack.znjj.common.restful.ServerResponse;
 import com.zack.znjj.model.User;
+import com.zack.znjj.service.IFileService;
 import com.zack.znjj.service.IRedisService;
 import com.zack.znjj.service.IUserService;
+import com.zack.znjj.util.PropertiesUtil;
 import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.Map;
 
 /**
  * Created by geely
@@ -29,6 +35,8 @@ public class UserController {
 
     @Autowired
     private IRedisService iRedisService;
+
+    private IFileService iFileService;
 
     /**
      * 用户登录
@@ -74,6 +82,26 @@ public class UserController {
         ServerResponse<User> userServerResponse = iUserService.parseRequest(request);
         userServerResponse.getData().setPassword(org.apache.commons.lang3.StringUtils.EMPTY);
         return userServerResponse;
+    }
+
+    @RequestMapping("update/headerImage")
+    public ServerResponse upload(@RequestParam(value = "upload_file", required = false) MultipartFile file, HttpServletRequest httpServletRequest) {
+        ServerResponse<User> userServerResponse = iUserService.parseRequest(httpServletRequest);
+        if (iUserService.checkAdminRole(userServerResponse.getData()).isSuccess()) {
+            String path = httpServletRequest.getSession().getServletContext().getRealPath("upload");
+            String targetFileName = iFileService.upload(file, path);
+            String url = PropertiesUtil.getProperty("ftp.server.http.prefix") + targetFileName;
+            User data = userServerResponse.getData();
+            data.setHeaderImage(url);
+            ServerResponse updateDate = iUserService.updateUserInfo(data);
+            if (updateDate.isSuccess()) {
+                return ServerResponse.createBySuccess(url);
+            } else {
+                return updateDate;
+            }
+        } else {
+            return ServerResponse.createByErrorMessage("无权限操作");
+        }
     }
 
 

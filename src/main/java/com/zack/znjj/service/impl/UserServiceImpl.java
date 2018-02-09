@@ -54,6 +54,16 @@ public class UserServiceImpl implements IUserService {
     }
 
 
+    public ServerResponse<String> updateUserInfo(User user) {
+        int i = userMapper.updateByPrimaryKeySelective(user);
+        if (i > 0) {
+            return ServerResponse.createBySuccess("更新成功");
+        } else {
+            return ServerResponse.createByErrorMessage("更新失败");
+        }
+    }
+
+
     public ServerResponse<String> register(User user) {
         ServerResponse validResponse = this.available(user.getUsername(), Const.USERNAME);
         if (!validResponse.isSuccess()) {
@@ -95,7 +105,6 @@ public class UserServiceImpl implements IUserService {
     }
 
     public ServerResponse selectQuestion(String username) {
-
         ServerResponse validResponse = this.available(username, Const.USERNAME);
         if (validResponse.isSuccess()) {
             //用户不存在
