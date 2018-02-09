@@ -36,6 +36,7 @@ public class UserController {
     @Autowired
     private IRedisService iRedisService;
 
+    @Autowired
     private IFileService iFileService;
 
     /**
