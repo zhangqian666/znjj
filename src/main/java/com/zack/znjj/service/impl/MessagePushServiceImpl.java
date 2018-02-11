@@ -29,7 +29,7 @@ public class MessagePushServiceImpl implements IMessagePushService {
     }
 
     private ServerResponse sendPushPayload(PushPayload pushPayload) {
-        JPushClient jpushClient = new JPushClient("391ca2878d54c4d39a596f77 ", "94cbfb012a8f385932416b71", null, ClientConfig.getInstance());
+        JPushClient jpushClient = new JPushClient("391ca2878d54c4d39a596f77", "94cbfb012a8f385932416b71", null, ClientConfig.getInstance());
         try {
             PushResult result = jpushClient.sendPush(pushPayload);
             log.info("Got result - " + result);
