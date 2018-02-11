@@ -250,7 +250,7 @@ public class UserServiceImpl implements IUserService {
     @Override
     public ServerResponse validateSmsCode(String phone, String code) {
         ServerResponse<String> data = requestData("https://webapi.sms.mob.com/sms/verify",
-                "appkey=24387f6d50a91&phone=" + phone + "&code=" + code);
+                "appkey=24387f6d50a91&phone=" + phone + "&zone=86&code=" + code);
         return data;
     }
 
