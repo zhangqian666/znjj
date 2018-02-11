@@ -34,4 +34,8 @@ public interface IUserService {
     ServerResponse checkAdminRole(User user);
 
     ServerResponse<User> parseRequest(HttpServletRequest request);
+
+    ServerResponse validateSmsCode(String phone, String code);
+
+    ServerResponse sendSms(String phone);
 }

@@ -66,6 +66,14 @@ public class UserController {
         return iUserService.register(user);
     }
 
+    public ServerResponse sendSms(String phone) {
+        return iUserService.sendSms(phone);
+    }
+
+    @RequestMapping(value = "validateSmsCode/", method = RequestMethod.POST)
+    public ServerResponse validateSmsCode(String phone, String code) {
+        return iUserService.validateSmsCode(phone, code);
+    }
 
     /**
      * @param str
